@@ -212,6 +212,12 @@ variable "enable_disk_uuid" {
   default = false
 }
 
+variable "create_vm_permissions" {
+  description = "Enable creation of VM entity permissions."
+  type        = bool
+  default     = true
+}
+
 variable "vm_role_name" {
   description = "The name of the vSphere role to assign to the user"
   type        = string
