@@ -1,0 +1,12 @@
+---
+name: Feature Branch Workflow | Github Actions Workflow
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+jobs:
+  validate:
+    name: Validate Terraform Files
+    uses: eingram-homelab/reusable_workflows/.github/workflows/_validate
