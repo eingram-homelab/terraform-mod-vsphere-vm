@@ -194,8 +194,7 @@ resource "vsphere_virtual_machine" "vm" {
     ignore_changes = [
       clone[0].template_uuid,
       disk,
-      folder,
-      default_ip_address
+      folder
     ]
   }
 }
