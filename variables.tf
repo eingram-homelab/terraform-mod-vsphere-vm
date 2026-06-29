@@ -1,5 +1,5 @@
 variable "vm_name_list" {
-    type=list(any)
+  type = list(any)
 }
 
 variable "vm_ram" {
@@ -17,7 +17,7 @@ variable "vsphere_compute_cluster" {
 }
 
 variable "vsphere_datastore_list" {
-    type = list(any)
+  type = list(any)
 }
 
 variable "vm_storage_policy" {
@@ -52,7 +52,7 @@ variable "network_interfaces" {
 }
 
 variable "vsphere_network_list" {
-    type = list(any)
+  type = list(any)
 }
 
 variable "port_group_name" {
@@ -108,8 +108,9 @@ variable "admin_password" {
 }
 
 variable "ip_address_list" {
-  type    = list(any)
-  default = []
+  description = "Per-VM IPv4 addresses. Use \"dhcp\" for any VM that should skip static IPv4 customization."
+  type        = list(any)
+  default     = []
 }
 
 variable "ip_gateway_list" {
@@ -117,7 +118,7 @@ variable "ip_gateway_list" {
 }
 
 variable "dns_server_list" {
-  type = list(any)
+  type    = list(any)
   default = []
 }
 
@@ -204,8 +205,8 @@ variable "scsi_controller" {
 }
 
 variable "run_once_command_list" {
-  type        = list
-  default     = []
+  type    = list(any)
+  default = []
 }
 
 variable "enable_disk_uuid" {
@@ -221,13 +222,13 @@ variable "create_vm_permissions" {
 variable "vm_role_name" {
   description = "The name of the vSphere role to assign to the user"
   type        = string
-  default     = ""  # Empty default, permission will only be created if a value is provided
+  default     = "" # Empty default, permission will only be created if a value is provided
 }
 
 variable "vm_user_id" {
   description = "The user ID to grant permissions to (format: user@domain or domain\\user)"
   type        = string
-  default     = ""  # Empty default, permission will only be created if a value is provided
+  default     = "" # Empty default, permission will only be created if a value is provided
 }
 
 variable "vm_permissions_propagate" {
