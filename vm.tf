@@ -39,14 +39,18 @@ data "vsphere_tag_category" "category" {
 }
 
 data "vsphere_tag" "tag" {
-  count = length(var.vm_tags)
-  name  = element(var.vm_tags, count.index)
+  count       = length(var.vm_tags)
+  name        = element(var.vm_tags, count.index)
   category_id = data.vsphere_tag_category.category[count.index].id
 }
 
 locals {
   # interface_count     = length(var.ipv4submask) #Used for Subnet handling
   template_disk_count = length(data.vsphere_virtual_machine.template.disks)
+  vm_ip_is_dhcp = [
+    for ip_address in var.ip_address_list :
+    lower(trimspace(tostring(ip_address))) == "dhcp"
+  ]
 }
 
 resource "vsphere_virtual_machine" "vm" {
@@ -78,10 +82,10 @@ resource "vsphere_virtual_machine" "vm" {
     for_each = data.vsphere_virtual_machine.template.disks
     iterator = template_disks
     content {
-      label             = length(var.disk_label) > 0 ? var.disk_label[template_disks.key] : "disk${template_disks.key}"
-      size              = var.vm_base_disk_size_gb != null ? var.vm_base_disk_size_gb[template_disks.key] : data.vsphere_virtual_machine.template.disks[template_disks.key].size
-      unit_number       = var.scsi_controller != null ? var.scsi_controller * 15 + template_disks.key : template_disks.key
-      thin_provisioned  = data.vsphere_virtual_machine.template.disks[template_disks.key].thin_provisioned
+      label            = length(var.disk_label) > 0 ? var.disk_label[template_disks.key] : "disk${template_disks.key}"
+      size             = var.vm_base_disk_size_gb != null ? var.vm_base_disk_size_gb[template_disks.key] : data.vsphere_virtual_machine.template.disks[template_disks.key].size
+      unit_number      = var.scsi_controller != null ? var.scsi_controller * 15 + template_disks.key : template_disks.key
+      thin_provisioned = data.vsphere_virtual_machine.template.disks[template_disks.key].thin_provisioned
       # datastore_id      = var.disk_datastore != "" ? data.vsphere_datastore.disk_datastore[0].id : null
       storage_policy_id = data.vsphere_storage_policy.storage_policy.id
     }
@@ -114,7 +118,7 @@ resource "vsphere_virtual_machine" "vm" {
           tonumber(terraform_disks.value["unit_number"])
         )
       )
-      thin_provisioned  = lookup(terraform_disks.value, "thin_provisioned", "true")
+      thin_provisioned = lookup(terraform_disks.value, "thin_provisioned", "true")
       # eagerly_scrub     = lookup(terraform_disks.value, "eagerly_scrub", "false")
       # datastore_id      = lookup(terraform_disks.value, "datastore_id", null)
       storage_policy_id = lookup(terraform_disks.value, "vsphere_storage_policy_id", null)
@@ -152,8 +156,8 @@ resource "vsphere_virtual_machine" "vm" {
       dynamic "linux_options" {
         for_each = var.is_windows_image ? [] : [1]
         content {
-          host_name = element(var.vm_name_list, count.index)
-          domain = element(var.dns_suffix_list, count.index)
+          host_name   = element(var.vm_name_list, count.index)
+          domain      = element(var.dns_suffix_list, count.index)
           script_text = <<-EOT
             #!/bin/sh
             if [ x$1 = x"precustomization" ]; then
@@ -176,11 +180,11 @@ resource "vsphere_virtual_machine" "vm" {
       }
 
       network_interface {
-        ipv4_address = length(var.ip_address_list) > 0 ? element(var.ip_address_list, count.index) : null
-        ipv4_netmask = length(var.ip_address_list) > 0 ? 24 : null
-        dns_domain = length(var.ip_address_list) > 0 ? element(var.dns_suffix_list, count.index) : null
+        ipv4_address = length(var.ip_address_list) > 0 && !local.vm_ip_is_dhcp[count.index] ? element(var.ip_address_list, count.index) : null
+        ipv4_netmask = length(var.ip_address_list) > 0 && !local.vm_ip_is_dhcp[count.index] ? 24 : null
+        dns_domain   = length(var.ip_address_list) > 0 && !local.vm_ip_is_dhcp[count.index] ? element(var.dns_suffix_list, count.index) : null
       }
-      ipv4_gateway    = length(var.ip_address_list) > 0 ? element(var.ip_gateway_list, count.index) : null
+      ipv4_gateway    = length(var.ip_address_list) > 0 && !local.vm_ip_is_dhcp[count.index] ? element(var.ip_gateway_list, count.index) : null
       dns_server_list = length(var.dns_server_list) > 0 ? var.dns_server_list : null
       dns_suffix_list = var.dns_suffix_list
     }
@@ -189,7 +193,8 @@ resource "vsphere_virtual_machine" "vm" {
   lifecycle {
     ignore_changes = [
       clone[0].template_uuid,
-      disk
+      disk,
+      folder
     ]
   }
 }
