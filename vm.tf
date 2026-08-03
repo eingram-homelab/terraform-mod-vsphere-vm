@@ -11,6 +11,7 @@ data "vsphere_datastore" "datastore" {
 data "vsphere_storage_policy" "storage_policy" {
   name = var.vm_storage_policy
 }
+
 data "vsphere_datastore" "disk_datastore" {
   count         = var.disk_datastore != "" ? 1 : 0
   name          = var.disk_datastore
@@ -97,27 +98,27 @@ resource "vsphere_virtual_machine" "vm" {
     content {
       label = terraform_disks.key
       size  = lookup(terraform_disks.value, "size_gb", null)
-      unit_number = (
-        lookup(
-          terraform_disks.value,
-          "unit_number",
-          -1
-          ) < 0 ? (
-          lookup(
-            terraform_disks.value,
-            "data_disk_scsi_controller",
-            0
-            ) > 0 ? (
-            (terraform_disks.value.data_disk_scsi_controller * 15) +
-            index(keys(var.data_disk), terraform_disks.key) +
-            (var.scsi_controller == tonumber(terraform_disks.value["data_disk_scsi_controller"]) ? local.template_disk_count : 0)
-            ) : (
-            index(keys(var.data_disk), terraform_disks.key) + local.template_disk_count
-          )
-          ) : (
-          tonumber(terraform_disks.value["unit_number"])
-        )
-      )
+      # unit_number = (
+      #   lookup(
+      #     terraform_disks.value,
+      #     "unit_number",
+      #     -1
+      #     ) < 0 ? (
+      #     lookup(
+      #       terraform_disks.value,
+      #       "data_disk_scsi_controller",
+      #       0
+      #       ) > 0 ? (
+      #       (terraform_disks.value.data_disk_scsi_controller * 15) +
+      #       index(keys(var.data_disk), terraform_disks.key) +
+      #       (var.scsi_controller == tonumber(terraform_disks.value["data_disk_scsi_controller"]) ? local.template_disk_count : 0)
+      #       ) : (
+      #       index(keys(var.data_disk), terraform_disks.key) + local.template_disk_count
+      #     )
+      #     ) : (
+      #     tonumber(terraform_disks.value["unit_number"])
+      #   )
+      # )
       thin_provisioned = lookup(terraform_disks.value, "thin_provisioned", "true")
       # eagerly_scrub     = lookup(terraform_disks.value, "eagerly_scrub", "false")
       # datastore_id      = lookup(terraform_disks.value, "datastore_id", null)
