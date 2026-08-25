@@ -98,7 +98,7 @@ resource "vsphere_virtual_machine" "vm" {
     content {
       label = terraform_disks.key
       size  = lookup(terraform_disks.value, "size_gb", null)
-      unit_number = count.index + local.template_disk_count
+      unit_number = local.template_disk_count + index(keys(var.data_disk), terraform_disks.key)
       # unit_number = (
       #   lookup(
       #     terraform_disks.value,
