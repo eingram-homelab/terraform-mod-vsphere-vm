@@ -1,5 +1,5 @@
 ---
-name: Feature Branch Workflow | Github Actions Workflow
+name: Feature Branch Workflow | Terraform
 
 on:
   push:
@@ -7,6 +7,6 @@ on:
       - main
 
 jobs:
-  validate:
-    name: Validate Terraform Files
-    uses: eingram-homelab/reusable_workflows/.github/workflows/_validate
+  flattened-terraform-f-workflow:
+    name: Terraform Feature Branch Workflow
+    uses: eingram-homelab/reusable-workflows/.github/workflows/_flattened-terraform-f-workflow.yaml@main
