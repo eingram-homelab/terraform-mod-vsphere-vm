@@ -98,6 +98,7 @@ resource "vsphere_virtual_machine" "vm" {
     content {
       label = terraform_disks.key
       size  = lookup(terraform_disks.value, "size_gb", null)
+      unit_number = count.index + local.template_disk_count
       # unit_number = (
       #   lookup(
       #     terraform_disks.value,
@@ -122,7 +123,7 @@ resource "vsphere_virtual_machine" "vm" {
       thin_provisioned = lookup(terraform_disks.value, "thin_provisioned", "true")
       # eagerly_scrub     = lookup(terraform_disks.value, "eagerly_scrub", "false")
       # datastore_id      = lookup(terraform_disks.value, "datastore_id", null)
-      storage_policy_id = lookup(terraform_disks.value, "vsphere_storage_policy_id", null)
+      storage_policy_id = data.vsphere_storage_policy.storage_policy.id
       # io_reservation    = lookup(terraform_disks.value, "io_reservation", null)
       # io_share_level    = lookup(terraform_disks.value, "io_share_level", "normal")
       # io_share_count    = lookup(terraform_disks.value, "io_share_level", null) == "custom" ? lookup(terraform_disks.value, "io_share_count") : null
