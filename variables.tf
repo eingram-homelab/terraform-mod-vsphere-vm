@@ -148,6 +148,10 @@ variable "domain" {
   default = ""
 }
 
+variable "domain_ou" {
+  default = ""
+}
+
 variable "vm_efi_secure" {
   default = false
 }
