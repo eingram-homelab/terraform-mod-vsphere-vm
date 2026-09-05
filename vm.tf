@@ -96,8 +96,8 @@ resource "vsphere_virtual_machine" "vm" {
     for_each = var.data_disk
     iterator = terraform_disks
     content {
-      label = terraform_disks.key
-      size  = lookup(terraform_disks.value, "size_gb", null)
+      label       = terraform_disks.key
+      size        = lookup(terraform_disks.value, "size_gb", null)
       unit_number = local.template_disk_count + index(keys(var.data_disk), terraform_disks.key)
       # unit_number = (
       #   lookup(
@@ -150,6 +150,7 @@ resource "vsphere_virtual_machine" "vm" {
           join_domain           = var.domain != "" ? var.domain : null
           domain_admin_user     = var.domain_user != "" ? var.domain_user : null
           domain_admin_password = var.domain_password != "" ? var.domain_password : null
+          domain_ou             = var.domain_ou != "" ? var.domain_ou : null
           workgroup             = var.workgroup != "" ? var.workgroup : null
           run_once_command_list = length(var.run_once_command_list) > 0 ? var.run_once_command_list : null
         }
