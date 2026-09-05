@@ -9,11 +9,9 @@ variable "vm_cpu" {
 }
 
 variable "vsphere_datacenter" {
-  default = "HomeLab Datacenter"
 }
 
 variable "vsphere_compute_cluster" {
-  default = "Intel NUC10 Cluster"
 }
 
 variable "vsphere_datastore_list" {
