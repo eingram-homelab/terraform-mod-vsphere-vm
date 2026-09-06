@@ -2,6 +2,9 @@
 
 All notable changes to this module are documented in this file, generated from git tags and commit history.
 
+## [v1.0.0] - 2026-09-06
+
+- feat: add multi-nic
 
 ## [v0.1.0] - 2026-09-06
 
