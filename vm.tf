@@ -14,6 +14,7 @@ data "vsphere_storage_policy" "storage_policy" {
   name = var.vm_storage_policy
 }
 
+#tflint-ignore: terraform_unused_declarations # referenced by the commented-out datastore_id override below
 data "vsphere_datastore" "disk_datastore" {
   count         = var.disk_datastore != "" ? 1 : 0
   name          = var.disk_datastore

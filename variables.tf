@@ -3,15 +3,19 @@ variable "vm_name_list" {
 }
 
 variable "vm_ram" {
+  type = number
 }
 
 variable "vm_cpu" {
+  type = number
 }
 
 variable "vsphere_datacenter" {
+  type = string
 }
 
 variable "vsphere_compute_cluster" {
+  type = string
 }
 
 variable "vsphere_datastore_list" {
@@ -19,6 +23,7 @@ variable "vsphere_datastore_list" {
 }
 
 variable "vm_storage_policy" {
+  type    = string
   default = ""
 }
 
@@ -33,52 +38,12 @@ variable "vsphere_template" {
 }
 
 variable "vm_folder_name" {
+  type    = string
   default = ""
-}
-
-variable "vm_disks_list" {
-  default = []
-}
-
-variable "esxi_hosts" {
-  default = []
-}
-
-variable "network_interfaces" {
-  description = "vmnics to be used"
-  default     = []
 }
 
 variable "vsphere_network_list" {
   type = list(any)
-}
-
-variable "port_group_name" {
-  default = ""
-}
-
-variable "vsphere_dvs" {
-  default = ""
-}
-
-variable "iso_path" {
-  default = ""
-}
-
-variable "vsphere_hardware_version" {
-  default = ""
-}
-
-variable "ssh_username" {
-  default   = ""
-  type      = string
-  sensitive = true
-}
-
-variable "ssh_password" {
-  default   = ""
-  type      = string
-  sensitive = true
 }
 
 variable "ssh_key" {
@@ -141,22 +106,27 @@ variable "time_zone" {
 }
 
 variable "workgroup" {
+  type    = string
   default = ""
 }
 
 variable "domain" {
+  type    = string
   default = ""
 }
 
 variable "domain_ou" {
+  type    = string
   default = ""
 }
 
 variable "vm_efi_secure" {
+  type    = bool
   default = false
 }
 
 variable "is_windows_image" {
+  type    = bool
   default = false
 }
 
@@ -190,12 +160,6 @@ variable "disk_datastore" {
 #   default     = []
 # }
 
-variable "scsi_type" {
-  description = "scsi_controller type, acceptable values lsilogic,pvscsi."
-  type        = string
-  default     = "pvscsi"
-}
-
 variable "scsi_controller" {
   description = "scsi_controller number for the main OS disk."
   type        = number
@@ -212,6 +176,7 @@ variable "run_once_command_list" {
 }
 
 variable "enable_disk_uuid" {
+  type    = bool
   default = false
 }
 
