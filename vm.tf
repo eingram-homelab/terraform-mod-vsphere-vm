@@ -27,8 +27,8 @@ data "vsphere_compute_cluster" "cluster" {
 }
 
 data "vsphere_network" "network" {
-  count         = length(var.vsphere_network_list)
-  name          = element(var.vsphere_network_list, count.index)
+  for_each      = toset(local.vm_network_names)
+  name          = each.value
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
@@ -55,6 +55,7 @@ locals {
     for ip_address in var.ip_address_list :
     lower(trimspace(tostring(ip_address))) == "dhcp"
   ]
+  vm_network_names = distinct(flatten(var.vsphere_network_list))
 }
 
 resource "vsphere_virtual_machine" "vm" {
@@ -77,9 +78,12 @@ resource "vsphere_virtual_machine" "vm" {
   hardware_version        = data.vsphere_virtual_machine.template.hardware_version
   enable_disk_uuid        = var.enable_disk_uuid ? "true" : "false"
 
-  network_interface {
-    network_id   = data.vsphere_network.network[count.index].id
-    adapter_type = data.vsphere_virtual_machine.template.network_interface_types[0]
+  dynamic "network_interface" {
+    for_each = var.vsphere_network_list[count.index]
+    content {
+      network_id   = data.vsphere_network.network[network_interface.value].id
+      adapter_type = data.vsphere_virtual_machine.template.network_interface_types[0]
+    }
   }
 
   dynamic "disk" {
@@ -185,10 +189,15 @@ resource "vsphere_virtual_machine" "vm" {
         }
       }
 
-      network_interface {
-        ipv4_address = length(var.ip_address_list) > 0 && !local.vm_ip_is_dhcp[count.index] ? element(var.ip_address_list, count.index) : null
-        ipv4_netmask = length(var.ip_address_list) > 0 && !local.vm_ip_is_dhcp[count.index] ? 24 : null
-        dns_domain   = length(var.ip_address_list) > 0 && !local.vm_ip_is_dhcp[count.index] ? element(var.dns_suffix_list, count.index) : null
+      dynamic "network_interface" {
+        for_each = var.vsphere_network_list[count.index]
+        iterator = nic
+        content {
+          # only the first NIC receives static IP customization; additional NICs default to DHCP
+          ipv4_address = nic.key == 0 && length(var.ip_address_list) > 0 && !local.vm_ip_is_dhcp[count.index] ? element(var.ip_address_list, count.index) : null
+          ipv4_netmask = nic.key == 0 && length(var.ip_address_list) > 0 && !local.vm_ip_is_dhcp[count.index] ? 24 : null
+          dns_domain   = nic.key == 0 && length(var.ip_address_list) > 0 && !local.vm_ip_is_dhcp[count.index] ? element(var.dns_suffix_list, count.index) : null
+        }
       }
       ipv4_gateway    = length(var.ip_address_list) > 0 && !local.vm_ip_is_dhcp[count.index] ? element(var.ip_gateway_list, count.index) : null
       dns_server_list = length(var.dns_server_list) > 0 ? var.dns_server_list : null

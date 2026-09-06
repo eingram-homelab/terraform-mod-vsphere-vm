@@ -43,7 +43,8 @@ variable "vm_folder_name" {
 }
 
 variable "vsphere_network_list" {
-  type = list(any)
+  description = "List of network name lists, one entry per VM (matching vm_name_list order). Each inner list defines the networks, in order, attached as virtual NICs to that VM."
+  type        = list(list(string))
 }
 
 variable "ssh_key" {
