@@ -1,5 +1,5 @@
 ---
-name: Feature Branch Workflow | Terraform
+name: Feature Branch Workflow | Terraform Module
 
 on:
   push:
