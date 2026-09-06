@@ -26,7 +26,7 @@ module "vm" {
   vsphere_datacenter       = "Datacenter1"
   vsphere_compute_cluster  = "Cluster1"
   vsphere_datastore_list   = ["datastore1"]
-  vsphere_network_list     = ["VM Network"]
+  vsphere_network_list     = [["VM Network"]] # one list of networks per VM (in vm_name_list order)
   vsphere_template         = "rocky9-template"
   vm_tag_categories        = ["environment"]
   vm_tags                  = ["prod"]
@@ -55,7 +55,7 @@ You can also reference the default branch instead of a tag with `?ref=main`, tho
 | `vsphere_datacenter` | Name of the vSphere datacenter to deploy into. |
 | `vsphere_compute_cluster` | Name of the vSphere compute cluster to deploy into. |
 | `vsphere_datastore_list` | List of datastore names to use, one per VM (by index). |
-| `vsphere_network_list` | List of network/port group names to attach, one per VM (by index). |
+| `vsphere_network_list` | List of network name lists, one entry per VM (by index). Each inner list defines the networks, in order, attached as virtual NICs to that VM. |
 | `vsphere_template` | Name of the source template to clone the VM(s) from. |
 | `vm_tag_categories` | List of vSphere tag category names to apply to the VM(s). |
 | `vm_tags` | List of vSphere tag names to apply to the VM(s). |
