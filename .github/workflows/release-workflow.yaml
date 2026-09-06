@@ -12,4 +12,4 @@ permissions:
 jobs:
   flattened-terraform-module-release-workflow:
     name: Terraform Module Release Workflow
-    uses: eingram-homelab/reusable-workflows/.github/workflows/_flattened-terraform-module-release-workflow.yaml@add-terraform-module-workflows
+    uses: eingram-homelab/reusable-workflows/.github/workflows/_flattened-terraform-module-release-workflow.yaml@main
