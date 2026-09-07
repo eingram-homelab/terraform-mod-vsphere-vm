@@ -205,9 +205,7 @@ resource "vsphere_virtual_machine" "vm" {
 
   lifecycle {
     ignore_changes = [
-      clone[0].template_uuid,
-      disk,
-      folder
+      clone[0].template_uuid
     ]
   }
 }
