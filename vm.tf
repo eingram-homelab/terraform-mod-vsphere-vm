@@ -75,6 +75,7 @@ resource "vsphere_virtual_machine" "vm" {
   scsi_type               = data.vsphere_virtual_machine.template.scsi_type
   hardware_version        = data.vsphere_virtual_machine.template.hardware_version
   enable_disk_uuid        = var.enable_disk_uuid ? "true" : "false"
+  nested_hv_enabled       = var.nested_hv_enabled
 
   dynamic "network_interface" {
     for_each = var.vsphere_network_list[count.index]
