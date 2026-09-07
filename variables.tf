@@ -204,3 +204,9 @@ variable "vm_permissions_propagate" {
   type        = bool
   default     = false
 }
+
+variable "nested_hv_enabled" {
+  description = "Enable nested virtualization for VMs."
+  type        = bool
+  default     = false
+}
