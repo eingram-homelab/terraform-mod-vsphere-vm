@@ -210,3 +210,9 @@ variable "nested_hv_enabled" {
   type        = bool
   default     = false
 }
+
+variable "sata_controller_count" {
+  description = "Number of SATA controllers to add to the VM."
+  type        = number
+  default     = 0
+}
