@@ -1,5 +1,5 @@
 ---
-name: Feature Branch Workflow | Terraform Module
+name: Terraform Module Feature Branch Workflow | Terraform Module
 
 on:
   push:
@@ -8,5 +8,5 @@ on:
 
 jobs:
   flattened-terraform-f-workflow:
-    name: Terraform Feature Branch Workflow
-    uses: eingram-homelab/reusable-workflows/.github/workflows/_flattened-terraform-f-workflow.yaml@main
+    name: Terraform Module Feature Branch Workflow
+    uses: eingram-homelab/reusable-workflows/.github/workflows/_flattened-terraform-module-f-workflow.yaml@main
