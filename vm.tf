@@ -76,7 +76,7 @@ resource "vsphere_virtual_machine" "vm" {
   hardware_version        = data.vsphere_virtual_machine.template.hardware_version
   enable_disk_uuid        = var.enable_disk_uuid ? "true" : "false"
   nested_hv_enabled       = var.nested_hv_enabled
-  sata_controller_count = var.sata_controller_count
+  sata_controller_count   = var.sata_controller_count
 
   dynamic "network_interface" {
     for_each = var.vsphere_network_list[count.index]
@@ -103,9 +103,9 @@ resource "vsphere_virtual_machine" "vm" {
     for_each = var.data_disk
     iterator = terraform_disks
     content {
-      label       = terraform_disks.key
-      size        = lookup(terraform_disks.value, "size_gb", null)
-      unit_number = local.template_disk_count + index(keys(var.data_disk), terraform_disks.key)
+      label            = terraform_disks.key
+      size             = lookup(terraform_disks.value, "size_gb", null)
+      unit_number      = local.template_disk_count + index(keys(var.data_disk), terraform_disks.key)
       thin_provisioned = lookup(terraform_disks.value, "thin_provisioned", "true")
       # eagerly_scrub     = lookup(terraform_disks.value, "eagerly_scrub", "false")
       # datastore_id      = lookup(terraform_disks.value, "datastore_id", null)
@@ -155,8 +155,8 @@ resource "vsphere_virtual_machine" "vm" {
               usermod -p $(openssl passwd -1 ${var.admin_password}) root
               useradd -p $(openssl passwd -1 ${var.admin_password}) ansible
               echo 'ansible ALL=(ALL:ALL) NOPASSWD: ALL' | tee /etc/sudoers.d/ansible
-              mkdir /home/ansible/.ssh
-              chown ansible:ansible /home/ansible/.ssh
+              mkdir -p /home/ansible/.ssh
+              chown -R ansible:ansible /home/ansible
               chmod 755 /home/ansible/.ssh
               touch /home/ansible/.ssh/authorized_keys
               chown ansible:ansible /home/ansible/.ssh/authorized_keys
