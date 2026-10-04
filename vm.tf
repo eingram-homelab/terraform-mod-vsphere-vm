@@ -152,6 +152,10 @@ resource "vsphere_virtual_machine" "vm" {
             #!/bin/sh
             if [ x$1 = x"precustomization" ]; then
               echo "Do Precustomization tasks"
+              # Remove tempuser created during ubuntu autoinstall
+              if id tempuser >/dev/null 2>&1; then
+                userdel -f -r tempuser
+              fi
               usermod -p $(openssl passwd -1 ${var.admin_password}) root
               useradd -p $(openssl passwd -1 ${var.admin_password}) ansible
               echo 'ansible ALL=(ALL:ALL) NOPASSWD: ALL' | tee /etc/sudoers.d/ansible
